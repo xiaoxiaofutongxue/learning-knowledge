@@ -281,6 +281,11 @@ print (a2,type (a2))
 #注意：对于bytes,只需要知道它跟字符串类型之间的互相转换
 ```
 
+| 操作  | 方向       | 函数         |
+| --- | -------- | ---------- |
+| 编码  | 字符串 → 字节 | `encode()` |
+| 解码  | 字节 → 字符串 | `decode()` |
+
 #### **字符串运算符**
 
 ![](images/2026-07-03-21-14-09-image.png)
@@ -305,12 +310,12 @@ print (a2,type (a2))
 
 ```
 st ='abcdefghijk'
-#从左往右
+#从左往右（从0开始）
 print (st[O:4])   # abcd
 print(st[4:7])    # efg
 print (st[3:])    #defghijik   ----下标为3之后的全部截取到
 print(st[:7])     # abcdefg    ----下标为7之前的全部截取到，不包含7
-#从右往左
+#从右往左（从-1开始）
 print(st[-1:])    # k
 print(st[:-1])    # abcdefghij
 print(st[-1:-5])
@@ -324,6 +329,12 @@ print(st[0::2])  #输出结果aceg
 ```
 
 所以，步长为2，表示间隔2-1个字符再取值
+
+如果想对字典进行类似列表的切片：
+
+```
+
+```
 
 ![](images/2026-07-03-23-02-06-image.png)
 
@@ -480,7 +491,9 @@ li.reverse()  #li=[4,2,3,5,1]倒序
 
 ![](images/2026-07-04-20-55-59-image.png)
 
-<u>注意：</u>列表推导式里的“表达式”本质上必须是“一行表达式”
+<u>注意：</u>列表推导式里的“表达式”必须是“一行表达式”
+
+列表推导式的本质是“创建一个列表，并把每次循环中表达式的返回值放进去”
 
 #### **列表嵌套**
 
@@ -631,6 +644,15 @@ dic = {'name':'bingbing','age':18}
 print(dic.items())   
 #dict_items([('name', 'bingbing'), ('age', 18)])
 ```
+
+| 操作     | 方法              | 结果          |
+| ------ | --------------- | ----------- |
+| 获取所有键  | `dict.keys()`   | 所有key       |
+| 获取所有值  | `dict.values()` | 所有value     |
+| 获取键对应值 | `dict[key]`     | 单个value     |
+| 安全获取值  | `dict.get(key)` | 单个value     |
+| 获取键值对  | `dict.items()`  | (key,value) |
+| 转列表    | `list()`        | 列表形式        |
 
 ### <mark>集合</mark>
 
@@ -975,6 +997,27 @@ sum函数内要放可迭代对象
 print(sum({1.5,3,4}))   #8.5
 ```
 
+语法：
+
+```
+sum(iterable, start=0) #start不写则默认是0
+```
+
+参数：
+
+| 参数         | 含义                   |
+| ---------- | -------------------- |
+| `iterable` | 可迭代对象（列表、元组、集合、生成器等） |
+| `start`    | 开始累加的初始值，默认是 `0`     |
+
+返回：
+
+| 情况               | 返回类型     |
+| ---------------- | -------- |
+| 元素都是整数           | `int`    |
+| 元素包含浮点数          | `float`  |
+| 指定 `start` 为其他类型 | 根据运算结果决定 |
+
 ![](images/2026-07-06-10-56-54-image.png)
 
 ```
@@ -1000,7 +1043,7 @@ map()：可以对可迭代对象中的每个元素进行映射，分别去执行
 
 ```
 map(func,iter1):func--自己定义的函数  iter1--要放进去的可迭代对象
-#简单来说就是对象中的每一个元素都会去执行这个函数
+#简单来说就是对象中的每一个元素都会去执行这个函数，第二个参数也可以为迭代器对象
 li=[1,2,3]
 def funa(x):
     return x*5
@@ -1138,6 +1181,16 @@ except NameError as e:
     print(e)
 ```
 
+<u>注意：</u>
+
+```
+except MyError as e:
+```
+
+意思是：
+
+> **如果 try 代码块中抛出的异常类型是 MyError（或者它的子类），就执行这个 except 后面的代码。**
+
 ![](images/2026-07-06-17-14-06-image.png)
 
 else只有在没有异常时才会执行的代码。可把except理解为if，except和else不同时执行
@@ -1203,6 +1256,26 @@ def login():
     raise Exception（”长度不足六位，密码输入失败”)
 print(login())
 ```
+
+#### **自定义异常类**
+
+Exception 是所有普通异常的基类
+
+所以继承 `Exception` 的原因是：
+
+> **让 自定义异常类变成一个真正的 Python 异常类型，使它可以被 `raise` 抛出，也可以被 `try...except` 捕获**
+> 
+> 同时`raise` 后面必须是异常类
+
+所以：
+
+```
+class MyError(Exception):
+```
+
+中的 `Exception` 不是为了调用某个具体功能，而是告诉 Python：
+
+> "MyError 是一种异常，请按照异常规则处理它。"
 
 ### <mark>模块</mark>
 
@@ -1556,7 +1629,7 @@ print (wa2)
 #内存地址不一样，说明是不同的对象，可以实例化多个对象
 ```
 
-#### **实例方法和实例属性**
+#### **<mark>实例方法和实例属性</mark>**
 
 实例方法：由对象调用，至少有一个self参数，执行实例方法的时候，自动将调用该方法的对象赋值给self
 
@@ -1615,7 +1688,7 @@ te=Test()
 
 ```
 class Person #人类
-    def__init(self,name,age,height):  #带参的构造函数
+    def__init__(self,name,age,height):  #带参的构造函数
         self.name = name  # 姓名  用参数构造实例属性（方便每次调构造函数时传不同的值）
         self.age = age    # 年龄
         self.height =height # 身高
@@ -2006,6 +2079,19 @@ Person.sleep()   #相当于Person.sleep(Person)
 4. 静态方法（staticmethod）
 
 特点：即类中的普通函数
+
+```
+对象.实例方法()
+↓
+类.实例方法(对象)
+
+
+类.类方法()
+↓
+类.类方法(类)
+```
+
+这就是 `self` 和 `cls` 自动传入的本质。
 
 | 方法类型 | 实例属性   | 类属性    | 自动获得   |
 | ---- | ------ | ------ | ------ |
@@ -2573,8 +2659,17 @@ yield的作用：
 
 1. 类似return，将指定值或者多个值返回给调用者,yield返回的结果可以是任意Python对象
 
-2. yield语句一次返回一个结果（对象），在每个结果中间，挂起函数，执行next()，再重新从挂起点继续往下执行
-   是函数中断，并保存中断的状态
+2. yield语句一次返回一个结果（生成器对象），在每个结果中间，挂起函数，执行next()，再重新从挂起点继续往下执行，是函数中断，并保存中断的状态
+   
+   |      | return | yield   |
+   | ---- | ------ | ------- |
+   | 返回次数 | 一次     | 多次      |
+   | 函数结束 | 是      | 否       |
+   | 保存状态 | 否      | 是       |
+   | 返回对象 | 普通值    | 生成器     |
+   | 适合   | 计算结果   | 大量数据、迭代 |
+   
+   yield = 一个可以暂停和恢复的 return。也可以理解成：Python 自动帮你写好了一个迭代器类。
 
 ![](images/2026-07-16-10-51-07-image.png)
 
@@ -2582,11 +2677,27 @@ yield的作用：
 # 列表推导式
 # for i in range(5):
 #print(i*5)
-li=[i*5 for iin range(5)]
+li=[i*5 for in range(5)]
 gen=(i*5 for i in range(5))  #列表推导式的[]改成()就成了生成器表达式
 print(li)
 print(gen)
 ```
+
+| 写法                          | 类型  |
+| --------------------------- | --- |
+| `[x for x in range(5)]`     | 列表  |
+| `(x for x in range(5))`     | 生成器 |
+| `list(x for x in range(5))` | 列表  |
+
+|                | 迭代器   | 生成器            |
+| -------------- | ----- | -------------- |
+| 本质             | 一种对象  | 一种特殊迭代器        |
+| 是否有 `__next__` | 有     | 有              |
+| 是否有 `__iter__` | 有     | 有              |
+| 创建方式           | 自己实现类 | yield / 生成器表达式 |
+| 代码量            | 多     | 少              |
+| 是否惰性计算         | 是     | 是              |
+| 是否节省内存         | 是     | 是              |
 
 ![](images/2026-07-16-14-34-56-image.png)
 
@@ -3144,7 +3255,16 @@ print(res.group())   #res.group()的作用是：获取正则匹配成功的内�
 
 第一个字符是点（.）
 
-\w还可以匹配汉字
+```
+\w
+```
+
+默认匹配：
+
+- 英文字母：`a-z`、`A-Z`
+- 数字：`0-9`
+- 下划线：`_`
+- Unicode 字符（例如中文）
 
 \s\s表示1个tab
 
@@ -3242,6 +3362,10 @@ import re
 
 res=re.match(r"\w*@(163|qq|126).com","123@126.com")
 print(res.group())  #123@126.com
+#有多个分组时，用group(n)来定位分组，n从1开始
+#group(0)输出全部且不报错，（）（（）（））结构的话，group(1)输出第一个大括号，
+（2）输出第二个大括号，（3）输出（2）中的第一个小括号，（4）输出（2）中的第二个小括号
+，（5）报错no such group
 ```
 
 3.`\num` = 在正则匹配过程中，要求当前位置再次匹配第 num 个括号分组之前匹配到的内容。
@@ -3283,10 +3407,31 @@ print(res.group()) #th
 2.findall():
 
 ```
+re.findall(pattern, string, flags=0)
+```
+
+三个参数：
+
+| 参数      | 作用       |
+| ------- | -------- |
+| pattern | 正则表达式规则  |
+| string  | 要搜索的字符串  |
+| flags   | 匹配模式（可选） |
+
+```
 import re
 
 res=re.findall(r"th","pythonth")
 print(res)   #['th', 'th']
+```
+
+还可以统计英文字母的个数
+
+```
+import re
+s = "hello123"
+count = len(re.findall("[a-zA-Z]", s))
+print(count)   
 ```
 
 3.sub():
@@ -3651,3 +3796,429 @@ print(",".join(a))
 | `swapcase()`   | 大小写互换     | `"aB".swapcase()` → `"Ab"`                |
 
 日常 Python 编程中，**字符串大小写转换直接使用 `upper()` 和 `lower()` 即可**。
+
+### **<mark>sorted函数</mark>**
+
+`sorted()` 是 Python 中非常重要的**排序函数**，用于对可迭代对象（列表、元组、字符串、字典、集合等）进行排序。
+
+它的特点：
+
+1. **返回一个新的列表**
+2. **不会修改原来的数据**
+3. 可以通过参数控制排序规则
+
+```
+sorted(iterable, key=None, reverse=False)
+```
+
+| 参数       | 作用                                |
+| -------- | --------------------------------- |
+| iterable | 需要排序的数据（可迭代对象）                    |
+| key      | 指定排序规则                            |
+| reverse  | 是否降序排序（True为降序，False为升序，不写则默认为升序） |
+
+```
+nums = [5, 2, 8, 1]
+result = sorted(nums)
+print(result)
+#[1, 2, 5, 8]
+```
+
+字符串：字符串会拆成一个个字符
+
+```
+s = "python"
+print(sorted(s))
+#['h', 'n', 'o', 'p', 't', 'y']
+```
+
+字典 dict：默认排序的是**字典的 key**
+
+```
+#如果排序字典的值：
+d = {
+    "c":3,
+    "a":1,
+    "b":2
+}
+print(sorted(d.values()))
+#[1,2,3]
+```
+
+对单词列表排序
+
+默认按照：
+
+1. 第一个字母
+2. 第二个字母
+3. 第三个字母
+
+依次比较。
+
+```
+words = ["banana", "apple", "cat"]
+print(sorted(words))
+#['apple', 'banana', 'cat']
+```
+
+**key参数**
+
+按照长度：
+
+```
+words = ["python", "c", "java"]
+print(sorted(words, key=len))
+#['c', 'java', 'python']
+```
+
+忽略大小写：（因为默认大写优先）
+
+```
+s = ["banana", "Apple", "cat"]
+print(sorted(s, key=str.lower))
+#['Apple', 'banana', 'cat']
+```
+
+按照绝对值排序
+
+```
+nums = [-5,3,-1,8]
+print(sorted(nums,key=abs))
+#[-1,3,-5,8]
+```
+
+使用 lambda 自定义排序
+
+lambda 参数: 返回值
+
+```
+lambda x:x[1]
+等价于：
+def func(x):
+    return x[1]
+等价于：
+sorted(students,key=func)
+```
+
+多条件排序
+
+要求：
+
+1. 年龄小的在前
+2. 年龄一样，名字排序
+
+```
+students=[
+    ("Tom",20),
+    ("Bob",18),
+    ("Amy",20)
+]
+```
+
+写：
+
+```
+sorted(
+    students,
+    key=lambda x:(x[1],x[0])    #这里：(x[1],x[0])返回一个元组
+)   
+```
+
+|         | sorted() | sort() |
+| ------- | -------- | ------ |
+| 属于      | 内置函数     | 列表方法   |
+| 返回值     | 新列表      | None   |
+| 是否改变原数据 | ❌        | ✅      |
+| 适用对象    | 所有可迭代对象  | 只能列表   |
+
+### **<mark>常见进制转换总结</mark>**
+
+Python 中：
+
+| 转换         | 函数          | 例子              |
+| ---------- | ----------- | --------------- |
+| 二进制 → 十进制  | `int(x,2)`  | `int("1010",2)` |
+| 八进制 → 十进制  | `int(x,8)`  | `int("12",8)`   |
+| 十六进制 → 十进制 | `int(x,16)` | `int("A",16)`   |
+| 十进制 → 二进制  | `bin()`     | `bin(10)`       |
+| 十进制 → 八进制  | `oct()`     | `oct(10)`       |
+| 十进制 → 十六进制 | `hex()`     | `hex(10)`       |
+
+### **<mark>filter()</mark>**
+
+`filter()` 是 Python 中一个**用于筛选数据的内置函数**，作用是：
+
+> **根据指定条件，从可迭代对象中筛选出符合条件的元素。**
+
+`filter()` 本质就是：**遍历每个元素 → 判断条件 → True留下，False丢弃。**
+
+基本语法：filter(function, iterable)
+
+| 参数              | 作用                    |
+| --------------- | --------------------- |
+| `function`（函数名） | 判断函数，返回 True 或 False  |
+| `iterable`      | 可迭代对象（列表、元组、字符串、生成器等） |
+
+返回：
+
+- 一个 **filter对象（迭代器）**
+
+```
+筛选奇数：def is_odd(x):
+    return x % 2 == 1  #奇数为1，为真，留下
+numbers = [1,2,3,4,5,6]
+result = filter(is_odd, numbers)
+print(list(result))
+  #[1,3,5]
+```
+
+#### **filter() 第二个参数可以是元组、生成器**
+
+```
+t = (10,15,20,25)
+result = filter(lambda x:x>18, t)
+print(tuple(result))
+# （20，25）
+```
+
+#### **filter中的 None 特殊情况**
+
+如果第一个参数写：
+
+```
+filter(None, iterable)
+```
+
+表示：
+
+> 保留所有为真的元素
+
+| 函数         | 作用           | 返回   |
+| ---------- | ------------ | ---- |
+| `map()`    | 转换数据（改变每个元素） | 迭代器  |
+| `filter()` | 筛选数据（筛选元素）   | 迭代器  |
+| `reduce()` | 累积计算         | 单个结果 |
+
+### **<mark>布尔值判断</mark>**
+
+#### Python中常见的 False 值
+
+以下对象转换为布尔值都是 `False`：
+
+```
+False
+None
+0
+0.0
+""
+[]
+()
+{}
+set()
+```
+
+#### 常见的 True 值
+
+几乎所有**非空、非零对象**都是 True：
+
+```
+bool("abc")      # True
+bool([1,2])      # True
+bool((1,))       # True
+bool({"a":1})    # True
+bool(100)        # True
+```
+
+Python 规定：
+
+#### 字符串：
+
+- **非空字符串 → True**
+- **空字符串 → False**
+
+注意：
+
+```
+" "
+```
+
+里面有一个空格，它不是空字符串，所以也是 `True`。
+
+### **<mark>希腊字母</mark>**
+
+#### 数学中的圆周率 π
+
+```
+import math
+print(math.pi)
+#3.141592653589793
+```
+
+#### 只是显示希腊字母可以用 Unicode：
+
+```
+print("\u03C0")
+#π
+```
+
+| 希腊字母 | Unicode  | Python写法 |
+| ---- | -------- | -------- |
+| π    | `\u03C0` | `π`      |
+| α    | `\u03B1` | `α`      |
+| β    | `\u03B2` | `β`      |
+| θ    | `\u03B8` | `θ`      |
+| λ    | `\u03BB` | `λ`      |
+
+### **<mark>Python 源文件编码声明</mark>**
+
+在 Python 源代码文件开头加入特殊注释：
+
+```
+# -*- coding: utf-8 -*-
+```
+
+即可声明该 Python 文件使用 **UTF-8 Unicode 编码**。
+
+但python3默认使用 UTF-8 Unicode 编码，所以可以不用加，而python2默认使用ASCII编码，所以需要加
+
+Python 源文件本质上是一个文本文件，例如：
+
+```
+print("你好")
+```
+
+文件保存到磁盘时，需要一种编码方式保存：
+
+```
+你好 ↓UTF-8 ↓二进制数据
+```
+
+Python 解释器读取源文件时，需要知道：
+
+> 这些字节应该按照什么编码方式解释？
+> 
+> 所以需要在 Python 源代码文件开头加入特殊注释
+
+### **<mark>math标准库模块</mark>**
+
+使用前需要导入：
+
+```
+import math
+```
+
+然后通过：
+
+```
+math.函数名()
+```
+
+调用。
+
+#### **常用函数总结表**
+
+| 函数/常量               | 作用         | 示例                      | 返回类型    |
+| ------------------- | ---------- | ----------------------- | ------- |
+| `math.pi`           | 圆周率 π      | `math.pi`               | `float` |
+| `math.e`            | 自然常数 e     | `math.e`                | `float` |
+| `math.sqrt(x)`      | 求平方根       | `math.sqrt(16)`         | `float` |
+| `math.pow(x,y)`     | 求 x 的 y 次方 | `math.pow(2,3)`         | `float` |
+| `math.ceil(x)`      | 向上取整       | `math.ceil(3.2)`        | `int`   |
+| `math.floor(x)`     | 向下取整       | `math.floor(3.8)`       | `int`   |
+| `math.trunc(x)`     | 截断小数部分     | `math.trunc(3.8)`       | `int`   |
+| `math.factorial(x)` | 求阶乘        | `math.factorial(5)`     | `int`   |
+| `math.gcd(a,b)`     | 最大公约数      | `math.gcd(12,18)`       | `int`   |
+| `math.lcm(a,b)`     | 最小公倍数      | `math.lcm(12,18)`       | `int`   |
+| `math.sin(x)`       | 正弦函数（弧度）   | `math.sin(math.pi/2)`   | `float` |
+| `math.cos(x)`       | 余弦函数（弧度）   | `math.cos(math.pi)`     | `float` |
+| `math.tan(x)`       | 正切函数（弧度）   | `math.tan(math.pi/4)`   | `float` |
+| `math.radians(x)`   | 角度转弧度      | `math.radians(180)`     | `float` |
+| `math.degrees(x)`   | 弧度转角度      | `math.degrees(math.pi)` | `float` |
+| `math.log(x)`       | 自然对数 ln(x) | `math.log(math.e)`      | `float` |
+| `math.log(x,b)`     | 以 b 为底的对数  | `math.log(8,2)`         | `float` |
+| `math.log10(x)`     | 以10为底的对数   | `math.log10(100)`       | `float` |
+| `math.log2(x)`      | 以2为底的对数    | `math.log2(8)`          | `float` |
+| `math.exp(x)`       | e 的 x 次方   | `math.exp(2)`           | `float` |
+
+#### **补充：**
+
+##### `pow()` 和 `**` 的区别：
+
+- `math.pow()` 专门用于数学计算，返回浮点数
+- `**` 是 Python 运算符，会根据输入决定类型
+
+##### 最大值、最小值：
+
+`math` 中没有：
+
+```
+math.max()
+math.min()
+```
+
+应该使用 Python 内置函数：
+
+```
+max()
+min()
+```
+
+### **<mark>assert语句</mark>**
+
+`assert` 语句是 Python 中用于**调试和检查条件是否成立**的语句。
+
+它的作用：
+
+> **如果条件为真，程序继续运行；如果条件为假，抛出 `AssertionError` 异常**
+> 
+> 它主要用于**程序员调试和验证程序假设**，而不是用于正式的错误处理。
+
+#### 基本语法：assert 条件
+
+```
+age = 18
+assert age >= 0
+print("年龄合法")  #年龄合法
+assert age >= 0
+print("年龄合法")  #AssertionError
+```
+
+#### 添加错误提示信息语法：assert 条件, "提示信息"
+
+```
+age = -5
+assert age >= 0, "年龄不能为负数"
+#AssertionError: 年龄不能为负数
+```
+
+#### **assert 和异常捕获**
+
+因为 `assert` 抛出的是：AssertionError，所以可以捕获：
+
+```
+try:
+    assert 1 == 2, "条件错误"
+except AssertionError as e:
+    print(e)    #条件错误
+```
+
+#### **一个重要特点：可以被关闭**
+
+Python 运行时可以使用：
+
+```
+python -O 文件名.py
+```
+
+关闭 assert。
+
+所以：**不要用 assert 处理用户输入、文件错误、网络错误等必须发生作用的检查。**
+
+#### 总结
+
+| 写法              | 作用                  |
+| --------------- | ------------------- |
+| `assert 条件`     | 检查条件是否成立            |
+| `assert 条件, 信息` | 失败时显示提示             |
+| 条件为 True        | 继续运行                |
+| 条件为 False       | 抛出 `AssertionError` |
