@@ -332,9 +332,13 @@ print(st[0::2])  #输出结果aceg
 
 如果想对字典进行类似列表的切片：
 
-```
-
-```
+| 需求      | 写法                                  |
+| ------- | ----------------------------------- |
+| 切 key   | `list(d.keys())[start:end]`         |
+| 切 value | `list(d.values())[start:end]`       |
+| 切键值对    | `list(d.items())[start:end]`        |
+| 得到新字典   | `dict(list(d.items())[start:end])`  |
+| 大字典切片   | `dict(islice(d.items(),start,end))` |
 
 ![](images/2026-07-03-23-02-06-image.png)
 
@@ -475,11 +479,39 @@ li.remove('d')
 li.remove('b')    #默认删除最开始出现的指定元素
 ```
 
+| 写法                        | 是否安全  | 推荐程度     |
+| ------------------------- | ----- | -------- |
+| `for i in l: l.remove(i)` | ❌ 不安全 | 不推荐      |
+| `for i in l[:]`           | ✅ 安全  | 常用       |
+| 列表推导式                     | ✅ 安全  | ⭐⭐⭐ 推荐   |
+| 倒序删除                      | ✅ 安全  | 适合需要原地修改 |
+
+`for i in l`实际上不是复制一份列表，而是在**列表本身上移动索引**。（列表会动态变化，删除一个后，后面的元素会顶替上一个元素的位置）
+
+列表推导式是重新创建一个列表，将符合的元素放入新的列表中
+
+```
+for i in l[:]:
+#实际上等价于：
+a=[5,6,77,45,22,12,24]
+
+for i in a:
+    if i%2==0:
+        l.remove(i)  
+#注意：
+遍历的是 a
+删除的是 l
+```
+
+在 Python 中有一个重要规则：
+
+> **不要在遍历列表时直接改变列表长度（添加、删除元素）。**
+
 排序
 
 sort:将列表按特定顺序重新排列，默认从小到大
 
-reverse：倒序，将列表倒置（反过来)
+reverse()：倒序，将列表倒置（反过来)
 
 ```
 li=[1,5,3,2,4]
@@ -487,7 +519,19 @@ li.sort()     #li=[1,2,3,4,5]按照从小到大的顺序排序
 li.reverse()  #li=[4,2,3,5,1]倒序
 ```
 
-### <mark>列表推导式</mark>
+reversed():倒序
+
+```
+s = input()
+print("".join(reversed(s)))
+```
+
+| 方法               | 类型   | 是否修改原对象 | 返回值    |
+| ---------------- | ---- | ------- | ------ |
+| `list.reverse()` | 列表方法 | ✅修改原列表  | `None` |
+| `reversed()`     | 内置函数 | ❌不修改    | 返回迭代器  |
+
+### <mark>列表推导式re</mark>
 
 ![](images/2026-07-04-20-55-59-image.png)
 
@@ -708,10 +752,13 @@ discard:选择要删除的元素，有就会删除。没有则不会发生任何
 
 ![](images/2026-07-05-13-24-52-image.png)
 
+交集：
+
 ```
 a={1,2,3,4}
 b={5,6,7,8}  
 print(a&b)   #没有共有的部分返回空集合set()
+print(A.intersection(B))   #效果和 & 一样
 ```
 
 ![](images/2026-07-05-13-31-08-image.png)
@@ -722,7 +769,35 @@ print(a&b)   #没有共有的部分返回空集合set()
 a={1,2,3.4}
 b={3,4,5.6}
 print(a | b)  #{1,2,3.4，5，6}
+print(A.union(B))   #效果和 | 一样
 ```
+
+差集：A 中有，但是 B 中没有的元素：A−B
+
+```
+A = {1, 2, 3, 4}
+B = {3, 4, 5, 6}
+print(A - B)   #{1, 2}
+```
+
+对称差集：两个集合中不相同的元素（去掉共同部分）：A^B
+
+```
+A = {1, 2, 3, 4}
+B = {3, 4, 5, 6}
+print(A ^ B)   #{1, 2, 5, 6}
+```
+
+## 总结表
+
+| 运算   | 符号  | 方法                       | 作用        |
+| ---- | --- | ------------------------ | --------- |
+| 交集   | `&` | `intersection()`         | 两者共有      |
+| 并集   | `   | `                        | `union()` |
+| 差集   | `-` | `difference()`           | A有B没有     |
+| 对称差集 | `^` | `symmetric_difference()` | 不同元素      |
+
+在 Python 中，**集合运算符和数学集合符号几乎是一一对应的**，这是 `set` 最重要的用途之一。
 
 ### <mark>类型转换</mark>
 
@@ -3582,7 +3657,7 @@ print(os.path.isabs(r"main.py"))    #False
 
 print(sys.path)：以列表的形式返回，第一项为当前所在的工作目录
 
-#### **time模块**
+#### time模块
 
 ![](images/2026-07-19-10-41-43-image.png)
 
@@ -3612,6 +3687,20 @@ print(sys.path)：以列表的形式返回，第一项为当前所在的工作�
 import time
 
 print(type(time.time()))   #<class 'float'>，返回的是浮点数
+```
+
+```
+import time
+
+start = time.time()
+
+# 要测试的代码
+for i in range(1000000):
+    pass
+
+end = time.time()
+
+print("运行时间:", end - start, "秒")
 ```
 
 3. time.localtime()：将一个时间戳转换为当前时区的struct_time
@@ -3646,7 +3735,29 @@ import time
 print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
 ```
 
-Python 时间格式符号整理表：
+7. time.perf_counter():
+
+Python 时间格式符号整理表：精确测量程序运行时间
+
+```
+import time
+
+start = time.perf_counter()
+
+for i in range(1000000):
+    pass
+
+end = time.perf_counter()
+
+print(end - start)
+```
+
+为什么比 `time.time()` 更适合？
+
+`time.time()`：
+
+- 用于获取当前时间
+- 可能受到系统时间调整影响
 
 | 格式符  | 含义                | 示例                       |
 | ---- | ----------------- | ------------------------ |
@@ -3673,13 +3784,33 @@ Python 时间格式符号整理表：
 | `%Z` | 时区名称              | CST                      |
 | `%%` | 百分号 `%`           | %                        |
 
-7. time.strptime(时间字符串,格式化字符串)：将时间字符串转化成struct_time
+8. time.strptime(时间字符串,格式化字符串)：将时间字符串转化成struct_time
 
 ```
 import time
 
 print(time.strptime("2021-08-02", "%Y-%m-%d"))   
 #time.struct_time(tm_year=2021, tm_mon=8, tm_mday=2, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=0, tm_yday=214, tm_isdst=-1)
+```
+
+#### **timeit模块**
+
+Python 提供专门测试代码速度的模块：
+
+```
+import timeit
+```
+
+```
+import timeit
+
+t = timeit.timeit(
+    "[x for x in range(1000)]",
+    number=10000   #表示：运行 10000 次。
+#如果不写number，则默认number=1000000
+)
+
+print(t)
 ```
 
 #### **logging模块**
@@ -3770,6 +3901,146 @@ logging.error("数据库连接失败")
 4.step：指定产生随机的步长，随机选择一个数据   
 
 例如start：2，stop：7，step：2，那么产生的随机数只能是2，4，6（从2开始以步长递增）
+
+##### random.choice(seq)
+
+作用：从序列中随机选择**一个元素**。
+
+语法：
+
+```
+random.choice(seq)
+```
+
+支持：list、tuple、string，返回：元素本身的类型
+
+##### **random.choices(seq, k=n)**
+
+作用：随机选择多个元素。
+
+特点：
+
+> **允许重复选择**
+
+语法：
+
+```
+random.choices(seq, k)
+```
+
+```
+import random
+a = [1,2,3,4]
+print(random.choices(a, k=5))  #可能[2,4,4,1,3]
+```
+
+##### random.sample(seq, k)
+
+作用：随机选择多个元素。
+
+特点：
+
+> **不会重复**
+
+```
+import random
+a = [1,2,3,4,5]
+print(random.sample(a,3))   #可能[2,5,1]
+```
+
+| 函数        | 是否重复  | 返回   |
+| --------- | ----- | ---- |
+| choice()  | 只能一个  | 元素   |
+| choices() | 允许重复  | list |
+| sample()  | 不允许重复 | list |
+
+##### **random.shuffle()**
+
+作用：随机打乱列表顺序。
+
+语法：
+
+```
+random.shuffle(list)
+```
+
+```
+import random
+a = [1,2,3,4,5]
+random.shuffle(a)
+print(a)   #可能[3,1,5,2,4]
+```
+
+注意：
+
+它会**直接修改原列表**。
+
+```
+b = random.shuffle(a)
+print(b)   #None
+```
+
+##### **random.seed()**
+
+作用：设置随机数种子。
+
+正常：
+
+```
+random.randint(1,10)
+```
+
+每次运行结果不同。
+
+如果设置：
+
+```
+random.seed(1)
+```
+
+随机结果会固定。
+
+##### **random.randbytes(n)**
+
+作用：生成随机字节。
+
+```
+import random
+x = random.randbytes(5)
+print(x)   #可能b'\x91\xab\x23\x45\xff'   
+#返回的类型是bytes
+```
+
+##### `random.choice()` + 权重
+
+```
+random.choices(
+    ["苹果","香蕉"],
+    weights=[1,3],
+    k=5
+)
+```
+
+表示：香蕉概率更高。
+
+因为：
+
+```
+苹果权重 = 1香蕉权重 = 3
+```
+
+| 函数                      | 作用        | 返回类型  |
+| ----------------------- | --------- | ----- |
+| `random.random()`       | 0~1随机小数   | float |
+| `random.randint(a,b)`   | 随机整数[a,b] | int   |
+| `random.randrange()`    | 随机整数范围    | int   |
+| `random.uniform(a,b)`   | 随机浮点数     | float |
+| `random.choice(seq)`    | 随机选一个元素   | 元素类型  |
+| `random.choices(seq,k)` | 随机选多个，可重复 | list  |
+| `random.sample(seq,k)`  | 随机选多个，不重复 | list  |
+| `random.shuffle(list)`  | 随机打乱列表    | None  |
+| `random.seed(x)`        | 设置随机种子    | None  |
+| `random.randbytes(n)`   | 随机字节      | bytes |
 
 ## **<mark>python补充知识点</mark>**
 
@@ -4222,3 +4493,259 @@ python -O 文件名.py
 | `assert 条件, 信息` | 失败时显示提示             |
 | 条件为 True        | 继续运行                |
 | 条件为 False       | 抛出 `AssertionError` |
+
+### **<mark>数据压缩</mark>**
+
+Python 中说的**数据压缩**，主要是指：
+
+> **将原本较大的数据转换成更小的二进制数据，以减少存储空间或网络传输时间；需要使用时再解压恢复。**
+
+完整过程：
+
+原始数据(str)
+      |
+      | encode()
+      ↓
+字节数据(bytes)
+      |
+      | compress()
+      ↓
+压缩数据(bytes)
+      |
+      | decompress()
+      ↓
+原始bytes
+      |
+      | decode()
+      ↓
+原始字符串(str)
+
+注意：**压缩针对的是 bytes，不是字符串。**
+
+```
+import zlib
+
+text = "你好，Python"
+
+# 1. 字符串转bytes
+data = text.encode("utf-8")
+
+# 2. 压缩
+compressed = zlib.compress(data)
+
+# 3. 解压
+result = zlib.decompress(compressed)
+
+# 4. bytes转字符串
+text2 = result.decode("utf-8")
+
+print(text2)  #你好，Python
+```
+
+`zlib.compress()` 有第二个参数：
+
+```
+zlib.compress(data, level)
+```
+
+level = 0~9 表示压缩程度。压缩等级越高，压缩越小，速度越慢，CPU消耗越大
+
+| 函数                      | 作用     | 输入      | 输出    |
+| ----------------------- | ------ | ------- | ----- |
+| `zlib.compress(data)`   | 压缩     | bytes   | bytes |
+| `zlib.decompress(data)` | 解压     | 压缩bytes | bytes |
+| `encode()`              | 字符串转字节 | str     | bytes |
+| `decode()`              | 字节转字符串 | bytes   | str   |
+| `len()`                 | 查看大小   | 各种对象    | int   |
+
+### **<mark>enumerate()</mark>**
+
+`enumerate()` 的核心作用：
+
+> **遍历可迭代对象时，同时得到元素的索引和值。**
+
+基本语法：
+
+```
+enumerate(iterable, start=0)
+```
+
+| 参数       | 含义                    |
+| -------- | --------------------- |
+| iterable | 可迭代对象（列表、字符串、元组、生成器等） |
+| start    | 索引开始值，默认是0            |
+
+```
+l = ["apple", "banana", "orange"]
+
+for i, x in enumerate(l):    
+    print(i, x)
+#0 apple
+1 banana
+2 orange
+```
+
+相当于：
+
+```
+for i in range(len(l)):    
+    x = l[i]
+```
+
+enumerate()返回的是一个enumerate对象，它本质上是一个**迭代器**。可以用 `next()`
+
+```
+l = ["a", "b", "c"]
+
+e = enumerate(l)
+print(next(e))
+print(next(e))
+print(next(e))
+#(0, 'a')
+(1, 'b')
+(2, 'c')
+```
+
+每次返回一个元组：
+
+```
+(索引, 元素)
+```
+
+### **<mark>多维列表（多维数组）</mark>**
+
+#### **1.使用嵌套列表创建二（多）维数组**
+
+```
+#创建一个 3行4列 的数组：
+arr = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9,10,11,12]
+]
+```
+
+#### **2.使用列表推导式生成二（多）维数组（推荐）**
+
+```
+#生成一个 3×4 全为0的数组：
+arr = [[0 for j in range(4)] for i in range(3)]
+#外层控制行数，内层控制列数
+print(arr)
+#[
+ [0,0,0,0],
+ [0,0,0,0],
+ [0,0,0,0]
+]
+```
+
+#### **3.使用 NumPy 创建多维数组（科学计算常用）**
+
+安装：
+
+```
+pip install numpy
+```
+
+导入：
+
+```
+import numpy as np
+```
+
+##### 创建三维数组
+
+```
+a=np.zeros((2,3,4))
+```
+
+表示：
+
+```
+2层3行4列
+```
+
+查看维度：
+
+```
+print(a.shape)
+```
+
+输出：
+
+```
+(2,3,4)
+```
+
+##### **创建随机数组**
+
+```
+a=np.random.random((3,3))
+
+print(a)
+```
+
+生成：
+
+```
+3×3随机矩阵
+```
+
+### **<mark>dict.fromkeys()</mark>**
+
+语法：
+
+```
+dict.fromkeys(iterable, value)
+```
+
+参数：
+
+| 参数       | 含义                | 是否必须            |
+| -------- | ----------------- | --------------- |
+| iterable | 可迭代对象（列表、字符串、元组等） | 必须              |
+| value    | 所有键对应的值           | 可选，不写默认为 `None` |
+
+```
+a = [1, 2, 3, 4]
+b = dict.fromkeys(a)
+print(b)    #{1: None, 2: None, 3: None, 4: None}
+```
+
+#### **指定 value**
+
+```
+a = ["name", "age", "gender"]
+b = dict.fromkeys(a, 0)
+print(b)   #{'name': 0, 'age': 0, 'gender': 0}
+```
+
+#### **额外作用**
+
+能删除列表重复元素并保持原顺序不变（原因：字典的 key 不能重复且字典会记录元素插入的顺序）
+
+```
+lst = [12,24,35,24,88,120,155,88,120,155]
+new_lst = list(dict.fromkeys(lst))
+print(new_lst)
+#[12, 24, 35, 88, 120, 155]
+```
+
+### **<mark>排列函数</mark>**
+
+Python 的 `itertools` 中有专门的排列函数：
+
+`permutations()` 返回的是元组：
+
+```
+from itertools import permutations
+l = [1, 2, 3]
+for x in permutations(l):
+    print(list(x))
+#[1, 2, 3]
+[1, 3, 2]
+[2, 1, 3]
+[2, 3, 1]
+[3, 1, 2]
+[3, 2, 1]
+```

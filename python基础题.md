@@ -962,3 +962,370 @@ print(random.uniform(10,1000))
 ## **<mark>第六十八题</mark>**
 
 问题：请编写一个程序输出0和10之间的随机偶数使用随机模块和列表理解。
+
+```
+#方法一
+import random 
+print(random.randrange(0,10,2))  
+#方法二
+import random
+print(random.choice([i for i in range(11) if i%2==0]))
+```
+
+## **<mark>第六十九题</mark>**
+
+问题：请编写一个程序输出一个随机数，它可以被5和7整除，在0和100之间，使用随机模块和列表理解。
+
+```
+import random
+print(random.choice([i for i in range(101) if i%5==0 and i%7==0]))
+```
+
+## **<mark>第七十题</mark>**
+
+问题：请编写一个程序生成一个包含100到200之间的5个随机数的列表。
+
+```
+import random
+print(random.sample(range(100,201), 5))
+```
+
+## **<mark>第七十一题</mark>**
+
+问题：请编写一个程序随机生成一个列表，其中包含100到200之间的5个偶数。
+
+```
+import random
+print(random.sample([x for x in range(100,201) if x%2==0], 5))
+```
+
+## **<mark>第七十二题</mark>**
+
+问题：请编写一个程序，随机生成一个列表，从1到1000（含1000），有5个数字，可以被5和7整除。
+
+```
+import random
+print(random.sample([x for x in range(1,1001) if x%5==0 and x%7==0], 5))
+```
+
+## **<mark>第七十三题</mark>**
+
+问题：请写一个程序来随机打印一个7到15之间的整数（包括15）。
+
+```
+import random
+print(random.randrange(7,16)) 
+```
+
+## **<mark>第七十四题</mark>**
+
+问题：请编写一个程序来压缩和解压字符串“hello world!hello world!hello world!”。
+
+```
+import zlib
+text = "hello world!hello world!hello world!"
+
+# 1. 字符串转bytes
+data = text.encode("utf-8")
+
+# 2. 压缩
+compressed = zlib.compress(data)
+
+# 3. 解压
+result = zlib.decompress(compressed)
+
+# 4. bytes转字符串
+text2 = result.decode("utf-8")
+
+print(text2)  #你好，Python
+```
+
+## **<mark>第七十五题</mark>**
+
+问题：请编写一个程序打印100次“1+1”执行的运行时间。
+
+```
+import timeit
+t=timeit.timeit( "for x in range(100):1+1",
+    number=1)
+print(t)
+```
+
+## **<mark>第七十六题</mark>**
+
+问题：请编写一个程序洗牌和打印列表[3，6，7，8]。
+
+```
+import random
+
+l=[3,6,7,8]
+random.shuffle(l)
+print(l)
+```
+
+## <mark>第七十七题</mark>
+
+问题：请编写一个程序，生成主语在[“I”，“You”]，动词在[“Play”，“Love”]中，对象在[“Hockey”，“Footbal1"]中的所有句子
+
+```
+import random
+
+l1=["I","You"]
+l2=["Play","Love"]
+l3=["Hockey","Football"]
+for i in l1:
+    for j in l2:
+        for k in l3:
+            l=[i,j,k]
+            print(" ".join(l))
+```
+
+## **<mark>第七十八题</mark>**
+
+问题：请写一个程序打印列表，删除后删除偶数[5,6,77,45,22,12,24]。
+
+```
+l=[5,6,77,45,22,12,24]
+l=[i for i in l if i%2!=0]
+print(l)
+```
+
+## **<mark>第七十九题</mark>**
+
+问题：使用列表理解，请编写程序，删除[12，24，35，70，88，120，155]中可被5和7整除的删除数后，打印列表。
+
+```
+l=[12,24,35,70,88,120,155]
+l=[i for i in l if i%5!=0 or i%7!=0]
+print(l)
+```
+
+## **<mark>第八十题</mark>**
+
+问题：使用列表理解法，请编写一个程序，去掉[12，24，35，70，88，120，155]中的第0，2，4，6位置上的元素后打印列表
+
+```
+l=[12,24,35,70,88,120,155]
+l=[l[x] for x in range(len(l)) if x%2!=0]
+print(l)
+```
+
+## **<mark>第八十一题</mark>**
+
+问题：使用列表理解，编写一个程序生成一个358三维数组，每个元素为0。
+
+```
+import numpy as np
+a=np.zeros((3,5,8))
+print(a)
+```
+
+## **<mark>第八十二题</mark>**
+
+问题：利用列表理解，请编写一个程序，去掉[12，24，35，70，88，120，155]中的第0，第4，第5个数字后，将列表打印出来。
+
+```
+li=[12,24,35,70,88,120,155]
+li=[x for (i,x) in enumerate(li) if i not in [0,4,5]]
+print(li) 
+```
+
+## **<mark>第八十三题</mark>**
+
+问题：通过使用列表理解，请编写一个程序，在[12，24，35，24，88，120，155]中删除值24后打印列表
+
+```
+li=[12,24,35,24,88,120,155]
+li=[x for (i,x) in enumerate(li) if x not in [24]]
+print(li)
+```
+
+## **<mark>第八十四题</mark>**
+
+问题：对于两个己知列表[1,3,6,78,35,55]和[12,24,35,24,88,120，155]编写一个程序来生成一个元素为上述两个列表交集的链表。
+
+```
+l1=[1,3,6,78,35,55]
+l2=[12,24,35,24,88,120,155]
+li=[x for (i,x) in enumerate(l1) if x in l2]
+print(li) 
+```
+
+## **<mark>第八十五题</mark>**
+
+问题：对于给定的列表[12,24,35,24,88,120,155,88,120,155]，编写一个程序来打印这个列表---删除所有重复的值与原始顺序保留
+
+```
+l1=[12,24,35,24,88,120,155,88,120,155]
+l=[x for (i,x) in enumerate(l1) if x not in l1[:i]]
+print(l)
+```
+
+## **<mark>第八十六题</mark>**
+
+问题：定义一个类Person和它的两个子类：Male和Female。所有的类都有一个方法"getGender"，它可以打印“Male”为男性类，“Female”为女性类。
+
+```
+class Person:
+    @staticmethod
+    def getGender():
+        pass
+class Male(Person):
+    @staticmethod
+    def getGender():
+        print("Male")
+class Female(Person):
+    @staticmethod
+    def getGender():
+        print("Female")
+Male.getGender()
+Female.getGender()
+```
+
+## **<mark>第八十七题</mark>**
+
+问题：请编写一个程序，计算并打印由控制台输入的字符串中的每个字符的数量。
+示例：如果下面的字符串作为程序的输入：abcdefgab：
+那么，程序的输出应该是：a,2 c,2 b,2 e,1 d,1 g,1 f,1;
+
+```
+#法一
+l=list(input("请输入字符串："))
+li=list(dict.fromkeys(l))
+for i in li:
+    print(f"{i},{l.count(i)}",end=" ")
+#法二
+dic={}
+s=input()
+for ch in s:
+    dic[ch]=dic.get(ch,0)+1
+print(" ".join(['%s,%s'%(k,v)for k,v in dic.items()]))  
+```
+
+## **<mark>第八十八题</mark>**
+
+问题：x=[“11”，“uu”，’kk’，'hh']，y=[1，2，3,4,5,6]，对两个列名进行数据对齐，一个键，一个值的对齐形式。
+
+```
+x=['11','uu','kk','hh']
+y=[1,2,3,4,5,6]
+print(list(zip(x,y)))
+```
+
+## **<mark>第八十九题</mark>**
+
+问题：请编写一个程序，从控制台接收一个字符串，并以相反的顺序打印出来。
+示例：如果下面的字符串作为程序的输入：rise to vote sir；
+那么，程序的输出应该是:ris etov ot esir;
+
+```
+#法一
+l=list(input()) 
+l.reverse()
+print("".join(l))  
+#法二
+s = input()
+print(s[::-1])
+```
+
+## **<mark>第九十题</mark>**
+
+问题：请编写一个程序，从控制台接收一个字符串，并打印具有偶数索引的字符：
+示例：如果下面的字符串作为程序的输入：H1e21314o5w6o7r819d
+那么，程序的输出应该是：Helloworld；
+
+```
+#法一
+l=input()
+x=0
+for i in l:
+    if x%2==0:
+        print(i,end="") 
+    x=x+1
+法二
+s = input()
+print(s[::2])
+```
+
+## **<mark>第九十一题</mark>**
+
+问题：请写一个程序，打印[1，2，3]的所有排列：
+
+```
+from itertools import permutations
+l = [1, 2, 3]
+for x in permutations(l):
+    print(list(x))
+```
+
+## **<mark>第九十二题</mark>**
+
+问题：写一个程序来解决一个中国古代的经典难题：我们数农场里的鸡和兔子中有35个头和94条腿。我们有多少只兔子和多少只鸡？
+
+```
+for i in range(0,35):
+    for j in range(0,35):
+        if i+j==35 and 4*i+2*j==94:
+            print(f"兔子数量为：{i}，鸡数量为：{j}")
+```
+
+## **<mark>第九十三题</mark>**
+
+给定一个字符，用它构造一个底边长5个字符，高3个字符的等腰字符三角形。
+
+```
+a=input("Enter a character :")
+print(f"  {a}")
+print(f" {a*3}")
+print(f"{a*5}") 
+```
+
+## **<mark>第九十四题</mark>**
+
+己知一个字符串为“hello_world_yoyo”，如何得到一个队列[“hello”，”world”，”yoyo”］？
+
+```
+a="hello_world_yoyo"
+print(a.split("_"))
+```
+
+## **<mark>第九十五题</mark>**
+
+Python如何打印99乘法表？
+
+```
+i=1
+while i<=9:
+    j=1
+    while j<=i:
+        print(f"{i}*{j}={i*j}",end=" ")
+        j=j+1
+    print()
+    i=i+1
+```
+
+## **<mark>第九十六题</mark>**
+
+输入一个姓名，判断是否姓王。
+
+```
+l=input()
+print(l[0]=="王")  
+```
+
+## **<mark>第九十七题</mark>**
+
+统计字符串“Hello，welcome to my world.”中字母w出现的次数。
+
+```
+l=input()
+print(l.count('w'))
+```
+
+## **<mark>第九十八题</mark>**
+
+把列表a=[1，-6，2，-5，9，4，20，-3]中的数字绝对值。
+
+```
+
+```
