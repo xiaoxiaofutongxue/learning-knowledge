@@ -689,6 +689,91 @@ print(dic.items())
 #dict_items([('name', 'bingbing'), ('age', 18)])
 ```
 
+#### **合并两个字典**
+
+1.使用 `update()`（最常用）
+
+```
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'c': 3, 'd': 4}
+dict1.update(dict2)
+
+print(dict1)
+#{'a': 1, 'b': 2, 'c': 3, 'd': 4}
+```
+
+特点：
+
+- 会**修改原字典**
+- `dict2` 不变
+
+2.字典解包 `**`
+
+```
+dict1 = {'a': 1, 'b': 2}
+dict2 = {'c': 3, 'd': 4}
+dict3 = {**dict1, **dict2}
+
+print(dict3)
+#{'a':1,'b':2,'c':3,'d':4}
+```
+
+特点：
+
+- 创建新字典
+- 不改变原字典
+
+3.使用 `|` 运算符
+
+```
+dict1={'a':1}
+dict2={'b':2}
+
+dict3=dict1 | dict2
+
+print(dict3) 
+#{'a':1,'b':2}
+```
+
+4.循环添加
+
+```
+dict1={'a':1,'b':2}
+dict2={'c':3,'d':4}
+
+for key,value in dict2.items():
+    dict1[key]=value
+
+print(dict1)  
+{'a':1,'b':2,'c':3,'d':4}
+```
+
+5..collections.ChainMap
+
+如果只是想把两个字典**组合起来查看**，不想真正合并：
+
+```
+from collections import ChainMap
+
+dict3 = ChainMap(dict1, dict2)
+
+print(dict3['a'])
+```
+
+特点：
+
+- 不复制数据
+
+- 适合大量数据
+  
+  | 方法                    | 是否修改原字典 | Python版本 | 推荐    |
+  | --------------------- | ------- | -------- | ----- |
+  | `dict1.update(dict2)` | ✅修改     | 所有版本     | ⭐⭐⭐⭐⭐ |
+  | `{**dict1, **dict2}`  | ❌不修改    | 3.5+     | ⭐⭐⭐⭐  |
+  | `dict1 \| dict2`      | ❌不修改    | 3.9+     | ⭐⭐⭐⭐⭐ |
+  | 循环添加                  | 看写法     | 所有版本     | 学习原理  |
+  | `ChainMap`            | ❌不合并    | 所有版本     | 特殊场景  |
+
 | 操作     | 方法              | 结果          |
 | ------ | --------------- | ----------- |
 | 获取所有键  | `dict.keys()`   | 所有key       |
@@ -2745,6 +2830,8 @@ yield的作用：
    | 适合   | 计算结果   | 大量数据、迭代 |
    
    yield = 一个可以暂停和恢复的 return。也可以理解成：Python 自动帮你写好了一个迭代器类。
+   
+   <u>注意：</u>生成器执行到 `yield` 会立即返回并暂停，`yield` 后面的代码不会执行；只有下一次调用 `next()` 时，才会从 `yield` 的下一条语句继续执行。
 
 ![](images/2026-07-16-10-51-07-image.png)
 
@@ -4323,6 +4410,8 @@ Python 规定：
 import math
 print(math.pi)
 #3.141592653589793
+import numpy as np
+print(np.pi)
 ```
 
 #### 只是显示希腊字母可以用 Unicode：
@@ -4749,3 +4838,27 @@ for x in permutations(l):
 [3, 1, 2]
 [3, 2, 1]
 ```
+
+### **<mark>变量的交换</mark>**
+
+如果我们想交换a，b中的内容
+
+```
+a=1
+b=2
+#通常：
+tmp=a
+a=b
+b=temp
+#还可以这样
+```
+
+### **<mark>序列解包</mark>**
+
+```
+name='San Zhang'
+first_name,last_name=name.split()
+print(first_name,last_name)
+```
+
+ 
